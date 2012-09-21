@@ -1,0 +1,871 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Scala my Android</title>
+
+    <meta name="description"
+          content="A quick presentation covering how, and why you can / should use Scala as your language of choice when developing Android apps">
+    <meta name="author" content="Konrad Malawski">
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+    <!-- <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'> -->
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/print.css" type="text/css" media="print">
+
+    <link rel="stylesheet" href="lib/zenburn.css">
+</head>
+
+<body>
+
+<div class="reveal">
+    <div class="state-background"></div>
+
+    <div class="slides">
+        <section>
+            <h1>
+                Scala my Android
+                <img src="assets/images/scala_love_android.jpg" alt="scala"/>
+            </h1>
+            <script>
+                // Delicously hacky. Look away.
+                if (navigator.userAgent.match(/(iPhone|iPad|iPod|Android)/i)) document.write('<p style="color: rgba(0,0,0,0.3); text-shadow: none;">(' + 'Tap to navigate' + ')</p>');
+            </script>
+        </section>
+
+        <section>
+            <section>
+                <h2>About me</h2>
+
+                <p>
+                    <img src="./assets/images/about_me.png" alt="about me" style="background: white;"/>
+                </p>
+            </section>
+
+            <section>
+                <h2>what about you?</h2>
+
+                <p style="font-size: 9em; margin-top: 1em">?</p>
+            </section>
+        </section>
+
+        <section>
+            <section>
+                <h2>Scala...</h2>
+
+                <div class="fragment">
+                    <p>means <b>Stairs</b></p>
+
+                    <img src="assets/images/scala_stairs.jpg" alt="scala stairs"/></div>
+            </section>
+            <section>
+                <h2>Scala...</h2>
+                <ul>
+                    <li>is a <b>Functional</b> language</li>
+                    <li class="fragment">... and <b>Object Oriented</b> language</li>
+                    <li class="fragment">... that runs on the <b>JVM</b></li>
+                    <li class="fragment">... so, it compiles down to <b>Bytecode</b></li>
+                    <li class="fragment">... so, it can run on <b>Android</b>!</li>
+                </ul>
+
+                <div class="fragment"></div>
+            </section>
+        </section>
+
+        <section>
+            <section>
+                <h2>
+                    <br>
+                    <br>
+                    <br>
+                    The basics first!
+                </h2>
+            </section>
+
+          <section>
+            <h2>Variables vs. Values</h2>
+            Coding like a <b>final</b> nazi!
+            <pre><code contenteditable class="java">val conference = "Mobilizejszon"
+// conference = "mobilization" // compile error val == "java final"
+
+var age = 90
+age = 2
+// age = "trolololo!" // compile error String != Int</code></pre>
+
+            <div class="fragment">
+              The <b>Type</b> was inferred. <br/>
+              You can type it though:
+
+              <pre><code contenteditable class="java">val name: String = "Mobilization"</code></pre>
+
+              <pre class="fragment"><code contenteditable class="java">val name: String = "Mobilization"   ; // yay semicolons, GREAT!!!</code></pre>
+            </div>
+          </section>
+
+            <section>
+                <h2>From POJO... </h2>
+
+                <pre><code contenteditable class="java">
+public class Person {
+  private String name;
+  private String surname;
+
+  public Person(String name, String surname) {
+    this.name = name;
+    this.surname = surname;
+  }
+
+  public String getName() { return name; }
+  public void setName(String name) { this.name = name; }
+
+  public String getSurname() { return surname; }
+  public void setSurname(String surname) { this.surname = surname; }
+
+  @Override
+  public String toString() { /*...*/ }
+}
+                </code></pre>
+
+              <div class="fragment">
+                <h2>... to POSO!</h2>
+                <pre><code contenteditable class="java">class Person(name: String, surname: String)</code></pre>
+                <span class="fragment" style="font-style: italic;">"You forgot the toString()!"</span>
+              </div>
+            </section>
+
+            <section>
+              <h2>Case class</h2>
+                <pre><code contenteditable class="java">case class Person(name: String, age: Int)</code></pre>
+
+              <ul class="fragment">
+                <li>has toString,</li>
+                <li>has hashCode, equals, apply, unapply...</li>
+              </ul>
+            </section>
+
+            <section>
+                <h2>Collections</h2>
+                "Find all young women and say hello!"
+
+               <pre class="fragment"><code contenteditable class="java">
+ List&lt;String&gt; girls = FluentIterable
+   .from(people)
+   .filter(new Predicate&lt;Person&gt;() {
+     @Override
+     public boolean apply(Person person) {
+       return person != null && person.isWoman();
+     }
+   })
+   .transform(new Function&lt;Person, String&gt;() {
+     @Override
+     public String apply(Person input) {
+       return input.getFirstName() + " " + input.getLastName();
+     }
+   })
+   .toImmutableList();
+
+   for(String name : names)
+    println(String.format("Hello %s!", name);
+
+       // PS: DON'T call format on Android!</code></pre>
+
+              <div class="fragment">And that's pretty cool, for Java, actually... (<a href="http://code.google.com/p/guava-libraries/">Guava</a>rocks).</div>
+            </section>
+
+        <section>
+          <img src="assets/images/cry.png" alt=""/>
+        </section>
+
+          <section>
+            <h2>Embrace Scala Collections</h2>
+            The same as before, reimplemented:
+            <pre><code contenteditable class="java">people.filter(_.isWoman)</code></pre>
+            <pre><code contenteditable class="java">people.filter(_.isWoman).map(_.name)</code></pre>
+            <pre><code contenteditable class="java">people.filter(_.isWoman).map(_.name).foreach(greet _)</code></pre>
+
+            <div class="fragment">
+              You could write is like this:
+              <pre><code contenteditable class="java">def greet(name: String) = println("Hello " + name + "!")
+
+people filter { _.isWoman } map { _.name } foreach { n => greet _ } </code></pre>
+            </div>
+          </section>
+
+          <section>
+            <h2>Let's roll</h2>
+            Off to android stuff!
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>findById</h2>
+            <pre><code contenteditable class="xml">&lt;Button
+  android:id="@+id/my_button"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:text="@string/my_button_text"&gt;</code></pre>
+
+            <div class="fragment">
+              Java:
+                          <pre><code contenteditable class="java">class MyActivity extends Activity {
+
+  ListView comments;
+  Button newComment;
+
+  @Override
+  void onCreate(Bundle bundle) {
+    super.onCreate(bundle);
+    comments = (ListView) findViewById(R.id.comments);
+    newComment = (Button) findViewById(R.id.new_comment);
+  }
+}
+              </code></pre>
+              What sucks here? <br>
+              <span style="font-size: small;">Tip: One thing is fixable by RoboGuice.</span>
+            </div>
+          </section>
+
+          <section>
+            <h2>findView + TR</h2>
+            <b>TR</b> == <b>T</b>yped<b>R</b>esource.
+
+            <pre><code contenteditable class="java">class MyScalaActivity extends ScalaActivity {
+
+  lazy val Comments = findView(TR.comments)
+  lazy val NewComment = findView(TR.new_comment)
+
+  // with Types!
+}
+</code></pre>
+
+            <div class="fragment">What's a <b>lazy val</b>?</div>
+          </section>
+
+          <!-- ------------------------------------------------------------------------------------------------------ -->
+
+          <section>
+            <h2>Lazy values</h2>
+            <pre><code contenteditable class="java">var thing = 0
+
+lazy val incrementInLazyVal = { thing += 1; thing }
+
+thing = 100
+incrementInLazyVal
+incrementInLazyVal
+incrementInLazyVal
+
+assert { thing == 101 && incrementInLazyVal == 101 }
+            </code></pre>
+
+            <div class="fragment">
+vs. <b>val</b>:
+              <pre><code contenteditable class="java">var thing = 0
+
+val incrementInVal = { thing += 1; thing }
+
+thing = 100
+incrementInVal
+incrementInVal
+incrementInVal
+
+assert { thing == 1 && incrementInVal == 1 }</code></pre>
+
+              <div class="fragment">Note: No one writes such convoluted Scala! But this explains when what is evaluated.</div>
+            </div>
+          </section>
+
+          <section>
+            <h2>Calling methods without ()</h2>
+                        <pre><code contenteditable class="java">var thing = 0
+
+def incrementDef() = { thing += 1; thing }
+
+incrementDef()
+incrementDef
+incrementDef
+
+assert { thing == 3 }</code></pre>
+
+            <div class="fragment">
+              doesn't work the other way:
+
+              <pre><code contenteditable class="java">def something = 1337
+
+something // OK
+something() // compile error</code></pre>
+
+              Intuition is: <em>"() means side-effects"</em>
+            </div>
+
+          </section>
+        </section>
+
+        <!-- ------------------------------------------------------------------------------------------------------ -->
+        <section>
+          <section>
+            <h2><b>Trait</b>s</h2>
+
+            <div class="fragment">            A trait: </div>
+
+            <ul>
+              <li class="fragment">is "An <b>interface with implementation</b>".</li>
+              <li class="fragment">can be "<b>mixed in</b>"</li>
+              <li class="fragment"><b>MANY traits</b> can be mixed into one single <b>class</b></li>
+              <li class="fragment">it's NOT "just multiple inheritance", it's smarter:</li>
+              <li class="fragment">"<b>type linearization</b>" avoids the "diamond problem"</li>
+            </ul>
+
+          </section>
+
+          <section>
+            <h2><b>Trait</b>s</h2>
+            <pre><code contenteditable class="java">trait SayVerb {
+  // some magic here... Comes after the next few slides ;-)
+
+  def sayAwesome() = "Awesome!".toast() // make a toast!
+  def sayAmazing() = "Amazing!".toast()
+}
+
+trait Logging { /* logging impl */ }</code></pre>
+
+            <pre><code contenteditable class="java">class MyActivity extends Activity
+  with SayVerb
+  with Logging</code></pre>
+
+            <div class="fragment">
+              <em>Hey! Where did that <em>toast</em> method come from?!</em>
+            </div>
+          </section>
+
+          <section>
+            <h2>A trait for ContentView</h2>
+            Let's replace good ol' <b>setContentView</b> with a Trait:
+
+            <pre><code contenteditable class="java">trait ContentView extends Activity with TypedActivity {
+
+  // force the user to implement this "method? / field?"
+  def ContentView: TypedLayout
+
+  override def onCreate(bundle: Bundle) {
+    setContentView(ContentView.id)
+    super.onCreate(bundle)
+  }
+} </code></pre>
+          </section>
+
+          <section>
+            <h2>with ContentView</h2>
+            <pre><code contenteditable class="java">class LoginActivity extends ScalaActivity
+  with ViewListenerConversions
+  with ContentView {
+
+  // we implement the def ContentView with a value!
+  val ContentView = TR.layout.login
+}</code></pre>
+          </section>
+
+          <section>
+            <h2>Mix and match</h2>
+            In my small "<a href="http://ktoso.github.com/scala-words/">ScalaWords</a>" library a typical pattern is:
+            <pre><code contenteditable class="java">object Dictionary extends Logging
+  with TimedVerb
+  with RetryVerb
+  with DoToVerb
+  with UniquifyVerb</code></pre>
+
+            <div class="fragment">
+              and then you use this "<em>static singleton bag of methods</em>" by:
+
+              <pre><code contenteditable class="java">def things() {
+  import Dictionary._
+  // use this dictionaty
+}</code></pre>
+
+              (imagine _ works like * in Java).
+            </div>
+
+          </section>
+        </section>
+
+        <!-- ------------------------------------------------------------------------------------------------------ -->
+
+        <section>
+          <section>
+            <h2>Pimp my Library!</h2>
+            <em>Let's pimp' Android API's!</em>
+
+            <div class="fragment">
+              <pre><code contenteditable class="java">"Hello world!".toast</code></pre>
+              So... where did that method come from?
+              <br>
+              <br>
+              <span class="fragment">That IS a <b>java.lang.String</b> right?</span>
+              <span class="fragment">...right?</span>
+            </div>
+          </section>
+
+          <section>
+            <h2><b>Implicit</b> Conversions</h2>
+
+            <pre><code contenteditable class="java">// Scala "magic" here
+val it: java.lang.String = "Hello %s!"
+
+it.format("Łódź")        == "Hello Łódź!"</code></pre>
+
+            <div class="fragment">
+              String doesn't have the format method... <br>
+              but <b>RichString</b> has!
+            </div>
+
+            <div class="fragment">
+              <br>
+              The mentioned "magic" is:
+              <pre><code contenteditable class="java">implicit def string2richString(s: String) = new RichString(s)
+
+// String -> RichString</code></pre>
+            </div>
+          </section>
+
+          <section>
+            <h2>Implicit Conversions</h2>
+            Steps the <b>Compiler</b> takes:
+
+            <ol>
+              <li class="fragment">String doesn't have <em>format(String)</em>!</li>
+              <li class="fragment">Is there an Implicit Conversion (in scope), <br> to a Type that has this method?</li>
+              <li class="fragment">If yes, put a call to it where the format call is needed!</li>
+            </ol>
+
+            <pre class="fragment"><code contenteditable class="java">"%s".format("aha!") // compiler starts looking...
+
+// and REWRITES it to:
+
+new RichString("%s").format("aha!")</code></pre>
+
+            <div class="fragment">Easy as <em>goo pie</em>!</div>
+          </section>
+
+          <section>
+            <h2>Toast.makeText</h2>
+
+            <p>Back to our Toast example</p>
+
+            <p>Java:</p>
+            <pre><code contenteditable class="java">Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()</code></pre>
+
+            Problems?
+            <br>
+            <br>
+
+            <div class="fragment">Where do we take the ctx (Context) from?</div>
+          </section>
+
+          <section>
+            <h2>Multiple parameter lists</h2>
+            <img src="assets/images/27089452.jpg" alt="">
+
+            <h3 class="fragment">def function(a: Int)(b: Int)</h3>
+          </section>
+
+          <section>
+            <h2>Multiple parameter lists</h2>
+            Instead of:
+            <pre><code contenteditable class="java">
+def add(a: Int): (Int) => Int = addStep2(a, _)
+// add returns a function that takes an Int, and returns an Int
+
+def addStep2(a: Int, b: Int) = a + b
+// the final step, adding those numbers
+
+// usage:
+val part2 = add(2)(2)
+</code></pre>
+
+            We're able to write:
+
+            <pre><code contenteditable class="java">def add(a: Int)(b: Int) = a + b</code></pre>
+
+            <em class="fragment">Tremendously useful!</em>
+          </section>
+
+          <section>
+            <h2>Implicit <br><b>Values</b> + <b>Parameters</b></h2>
+            Similiar to conversions, but we look for a parameter:
+
+            <pre><code contenteditable class="java">
+// IMPLICIT VALUE
+implicit val ctx = getApplicationContext()
+
+// IMPLICIT PARAMETER LIST
+def example()(implicit ctx: Context) = "I have " + ctx</code></pre>
+
+            <div class="fragment">
+            That's how you can use it:
+
+              <pre><code contenteditable class="java">
+                example()(getApplicationContext)
+
+                // or!
+
+                implicit val ctx = getApplicationContext
+                example()
+              </code></pre>
+            </div>
+          </section>
+
+          <section>
+            <h2>trait Toasts</h2>
+            <pre><code contenteditable class="java">trait Toasts {
+
+  implicit def charSeq2toastable(str: java.lang.CharSequence) =
+    new Toastable(str.toString)
+
+  class Toastable(msg: String) {
+
+    import android.widget.Toast._
+
+    def toast(implicit ctx: Context) {
+      makeText(ctx, msg, LENGTH_LONG).show()
+    }
+  }
+}</code></pre>
+
+            Usage:
+            <pre><code contenteditable class="java">class MyActivity extends Activity with Toasts {
+  implicit lazy val ctx = getApplicationContext
+
+  def sayHello() { "Hello".toast }
+}</code></pre>
+          </section>
+
+          <section>
+            <h2>Don't worry.</h2>
+            <img src="assets/images/27090742.jpg" alt="cat"/>
+          </section>
+
+        </section>
+
+        <!-- ------------------------------------------------------------------------------------------------------ -->
+
+        <section>
+          <section>
+            <h2>More pimpin' - Operators?</h2>
+            <pre><code contenteditable class="java">SomeTextView.setText("Hello World!")</code></pre>
+
+            <div class="fragment">
+              Can be turned into:
+
+              <pre><code contenteditable class="java">SomeTextView := "Hello World!"</code></pre>
+
+              <div class="fragment">
+                <br>
+                Altough it's just "<em>a funny method name</em>", <br> NOT an "operator".
+                <br>
+                <pre><code contenteditable class="java">SomeTextView.:=("Hello World!")</code></pre>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2>More pimpin' - onClick</h2>
+            Boilerplate alert!
+            <pre><code contenteditable class="java">
+button.setOnClickListener(new OnClickListener() {
+  public void onClick(View v) {
+    // do things...
+  }
+});</code></pre>
+
+            <div class="fragment">
+              <br>
+            Can be replaced with:
+            <br>
+            <pre><code contenteditable class="java">import ListenerConversions._
+
+button onClick { /* do things */ }</code></pre>
+
+              <pre><code contenteditable class="java">// even better:
+val sendMessage = { /*...*/ }
+
+button onClick sendMessage</code></pre>
+            </div>
+          </section>
+
+          <section>
+            <h2>Threading helpers</h2>
+            Instead of:
+
+            <pre><code contenteditable class="java">handler.post(new Runnable(){
+  @Override
+  void run() {
+    /* ... */
+  }
+});</code></pre>
+
+            <div class="fragment">
+              You could have meaningful methods, like:
+
+              <pre><code contenteditable class="java">inFuture { /* ... */ }
+inUiThread { /*...*/ }
+
+inFuture(whenComplete = notifyUser) { /* long task...*/ }
+
+inFutureWithProgressDialog  { /* long task...*/ }
+</code></pre>
+            </div>
+
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Without pimping too!</h2>
+
+              Java:
+            <pre><code contenteditable class="java">SharedPreferences sp = ctx.getSharedPreferences(key, 0);
+SharedPreferences.Editor editor = sharedPreferences.edit();
+editor.putString("key", "value");
+editor.commit();</code></pre>
+
+            <div class="fragment">
+              Compared to:
+
+              <pre><code contenteditable class="java">AppSharedPreferences.someKey = "value"</code></pre>
+              <br>
+              <em><b>No implicit's here!</b></em>
+            </div>
+
+          </section>
+
+          <section>
+            <h2>Funny methods - part 2</h2>
+
+            <div class="fragment">A little helper function:
+
+            <pre><code contenteditable class="java">def sharedPreferences(implicit ctx: Context) =
+  ctx.getSharedPreferences(AppName, 0)</code></pre></div>
+
+            <div class="fragment">Read a shared preference:
+              <pre><code contenteditable class="java">def workspaceName(implicit ctx: Context) =
+  Option { sharedPreferences.getString(KeyWorkspaceName, null) }</code></pre>
+            </div>
+
+            <div class="fragment">Write a shared preference:
+              <pre><code contenteditable class="java">def workspaceName_=(name: String)(implicit ctx: Context) {
+
+  withSharedPreferencesEditor { _.putString(KeyWorkspaceName, name) }
+
+}</code></pre>
+
+              Notice the method name: "<b>something_=</b>"
+
+            </div>
+          </section>
+
+            <section>
+              <h2>What's <b>Option</b>?</h2>
+              We could <b>map</b> over a collection, to: <br>
+              apply a function <b>for each</b> element?
+              <br>
+              <br>
+
+              <div class="fragment">
+                Option is like a 1 element Collection:
+
+                <ul>
+                  <li>is has <b>Some(value)</b></li>
+                  <li>or <b>None</b> value...</li>
+                </ul>
+              </div>
+
+              <div class="fragment">
+                <br>
+                <br>
+                Thus you can:
+
+                <pre><code contenteditable class="java">optionalValue map { _.toast }</code></pre>
+                Which will only be called, if the Option has <b>Some </b> value.
+
+              </div>
+
+            </section>
+
+          </section>
+        </section>
+
+        <!-- ------------------------------------------------------------------------------------------------------ -->
+        <section>
+          <section>
+            <h2>SBT</h2>
+            Simple Build Tool
+          </section>
+          
+          <section>
+            <h2>SBT</h2>
+            <img src="assets/images/Snapshot 9:21:12 3:11 AM.png" alt="" width="900px">
+          </section>
+
+          <section>
+            <h2>SBT</h2>
+            <ul>
+              <li class="fragment">
+                Fantastycznie wygodny <b>shell</b>
+              </li>
+              <li class="fragment">
+                zamiast sml (hello <em>pom.xml</em>!) <b>piszemy Build w Scali</b>
+              </li>
+              <li class="fragment">
+                Niestety mocno <b>skomplikowany "na dzień dobry"</b>...
+              </li>
+              <li class="fragment">
+                <em>de facto</em> standard dla projektów Scalowych
+              </li>
+            </ul>
+          </section>
+        </section>
+
+        <!-- ------------------------------------------------------------------------------------------------------ -->
+
+        <section>
+            <h2>I want moar!</h2>
+
+          <br>
+          Important links:
+
+          <ul>
+            <li>
+              <a href="https://www.coursera.org/course/progfun">Functional Programming Principles in Scala @ Coursera</a> <g:plusone href="https://www.coursera.org/course/progfun"></g:plusone>
+            </li>
+            <li>
+              <a href="http://www.amazon.co.uk/s/ref=sr_nr_scat_266239_ln?rh=n%3A266239%2Ck%3Ascala&keywords=scala&ie=UTF8&qid=1348091903&scn=266239&h=700c5471dfd5e057ca5b89d7b98fe67f46ba965a">Scala
+                books @ Amazon.co.uk</a>
+            </li>
+            <li>
+              <a href="https://github.com/harrah/xsbt/wiki">SBT wiki</a>
+            </li>
+          </ul>
+
+
+          <!-- Place this render call where appropriate -->
+          <script type="text/javascript">
+            (function() {
+              var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+              po.src = 'https://apis.google.com/js/plusone.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+            })();
+          </script>
+
+          <br>
+          <br>
+          Other links:
+
+          <ul>
+            <li>
+              <a href="http://www.blog.project13.pl/index.php/coding/1636/google-guava-presentation-from-google-io-extended-2012">My Guava Talk</a>
+            </li>
+            <li>
+              <a href="http://www.blog.project13.pl/index.php/project13/1389/conference-deep-dive-into-roboguice-cracow-mobi">My RoboGuice Talk</a>
+            </li>
+            <li>
+              <a href="http://ktoso.github.com/scala-words/">Scala Words</a> - a small scala library I do for fun
+            </li>
+          </ul>
+
+        </section>
+
+        <section>
+            <h1>ありがとう！</h1>
+
+            <h2>Dzięki!</h2>
+
+            <div class="center">
+                <img src="assets/images/capybaras.jpg" alt=""/>
+            </div>
+
+            <div class="inverted right">
+                slides are googlable <br/>
+                or @ <a href="http://www.blog.project13.pl">blog.project13.pl</a>
+            </div>
+        </section>
+    </div>
+
+
+    <!-- EOP -->
+
+
+    <!-- The navigational controls UI -->
+    <aside class="controls">
+        <a class="left" href="#">&#x25C4;</a>
+        <a class="right" href="#">&#x25BA;</a>
+        <a class="up" href="#">&#x25B2;</a>
+        <a class="down" href="#">&#x25BC;</a>
+    </aside>
+
+    <!-- Displays presentation progress, max value changes via JS to reflect # of slides -->
+    <div class="progress"><span></span></div>
+
+</div>
+
+<!-- Optional libraries for code syntax highlighting and classList support in IE9 -->
+<script src="lib/highlight.js"></script>
+<script src="lib/classList.js"></script>
+
+<script src="js/reveal.js"></script>
+
+<script>
+    // Parse the query string into a key/value object
+    var query = {};
+    location.search.replace(/[A-Z0-9]+?=(\w*)/gi, function (a) {
+        query[ a.split('=').shift() ] = a.split('=').pop();
+    });
+
+    // Fires when a slide with data-state=customevent is activated
+    Reveal.addEventListener('customevent', function () {
+        alert('"customevent" has fired');
+    });
+
+    // Fires each time a new slide is activated
+    Reveal.addEventListener('slidechanged', function (event) {
+        // event.previousSlide, event.currentSlide, event.indexh, event.indexv
+    });
+
+    Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls:true,
+
+        // Display a presentation progress bar
+        progress:true,
+
+        // If true; each slide will be pushed to the browser history
+        history:true,
+
+        // Loops the presentation, defaults to false
+        loop:false,
+
+        // Flags if mouse wheel navigation should be enabled
+        mouseWheel:true,
+
+        // Apply a 3D roll to links on hover
+        rollingLinks:true,
+
+        // UI style
+        theme:query.theme || 'default', // default/neon
+
+        // Transition style
+        transition:query.transition || 'default' // default/cube/page/concave/linear(2d)
+    });
+
+    hljs.initHighlightingOnLoad();
+</script>
+
+</body>
+</html>
