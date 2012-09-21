@@ -14,7 +14,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 
     <!-- <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'> -->
-    <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
+    <!--<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>-->
+
+    <link href="assets/fonts/DroidSans-Bold.ttf" rel="stylesheet" type="text/css"/>
+    <link href="assets/fonts/DroidSans.ttf" rel="stylesheet" type="text/css"/>
 
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/main.css">
@@ -51,9 +54,25 @@
             </section>
 
             <section>
-                <h2>what about you?</h2>
+                <h2>About you?</h2>
 
                 <p style="font-size: 9em; margin-top: 1em">?</p>
+            </section>
+
+          <section>
+                <h2>About this session</h2>
+
+            <ul>
+              <li class="fragment">
+                <b>Do ask questions</b> whenever you feel like it!
+              </li>
+              <li class="fragment">
+                Scala is <b>Simple</b>, but <b>Hard</b>.
+              </li>
+              <li class="fragment">
+                <b>Some presented</b> topics are really <b>advanced</b>.
+              </li>
+            </ul>
             </section>
         </section>
 
@@ -197,7 +216,27 @@ public class Person {
 
 people filter { _.isWoman } map { _.name } foreach { n => greet _ } </code></pre>
             </div>
+
+
+              <div class="fragment">
+                  Another trick is:
+
+                  <pre><code contenteditable class="java">people foreach println</code></pre>
+              </div>
           </section>
+
+            <section>
+              <h2>Scala collections == Immutable</h2>
+                <ul>
+                    <li class="fragment"><b>Immutability rocks</b></li>
+                    <li class="fragment"><b>thread-safe</b> by design</li>
+                    <li class="fragment"><b>no need for</b> manual <b>defensive copy</b></li>
+                    <li class="fragment">
+                        <pre><code contenteditable class="java">val bothSets: Set[String] = set ++ anotherSet</code></pre>
+                        and others...
+                    </li>
+                </ul>
+            </section>
 
           <section>
             <h2>Let's roll</h2>
@@ -343,6 +382,71 @@ trait Logging { /* logging impl */ }</code></pre>
 
             <div class="fragment">
               <em>Hey! Where did that <em>toast</em> method come from?!</em>
+            </div>
+          </section>
+
+            <section>
+              <h2>Same Menu, <br> Many Activities</h2>
+              You have to override this:
+                <pre><code contenteditable class="java">public class ActivityA extends Activity {
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.game_menu, menu);
+    return true;
+  }
+}</code></pre>
+
+              <pre class="fragment"><code contenteditable class="java">public class ActivityB extends Activity {
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.game_menu, menu);
+    return true;
+  }
+}</code></pre>
+
+              <div class="fragment">
+                A: <em>abstract class ActivityWithGameMenu { ... }</em> ?
+              </div>
+
+              <div class="fragment">
+                B: <em>Just delegate the hell out of it!</em>
+              </div>
+
+              <div class="fragment">
+                C: <em>Use a <b>Trait</b></em>
+              </div>
+
+            </section>
+
+          <section>
+            <h2><b>trait</b> GameMenu</h2>
+            <pre><code contenteditable class="java">trait GameMenu extends Activity {
+  override onCreateOptionsMenu(menu: Menu) = {
+    getMenuInflater.inflate(R.menu.game_menu, menu)
+    true
+  }
+}</code></pre>
+
+            <div class="fragment">
+              The extends here works a bit tricky. <br>
+              <em>(Yes, there are nicer ways to express this)</em>
+            </div>
+
+            <div class="fragment">
+              <br>
+              Usage:
+              <pre><code contenteditable class="java">class ActivityA extends Activity
+  with GameMenu {
+    /*...*/
+}
+
+
+class ActivityB extends SomethingFromAFrameworkActivity
+  with GameMenu {
+    /*...*/
+}</code></pre>
             </div>
           </section>
 
@@ -628,7 +732,7 @@ inFutureWithProgressDialog  { /* long task...*/ }
 
         <section>
           <section>
-            <h2>Without pimping too!</h2>
+            <h2>Shared preferences</h2>
 
               Java:
             <pre><code contenteditable class="java">SharedPreferences sp = ctx.getSharedPreferences(key, 0);
@@ -679,7 +783,7 @@ editor.commit();</code></pre>
               <br>
 
               <div class="fragment">
-                Option is like a 1 element Collection:
+                <div>Option is like a 1 element Collection:</div>
 
                 <ul>
                   <li>is has <b>Some(value)</b></li>
@@ -688,7 +792,6 @@ editor.commit();</code></pre>
               </div>
 
               <div class="fragment">
-                <br>
                 <br>
                 Thus you can:
 
@@ -699,6 +802,141 @@ editor.commit();</code></pre>
 
             </section>
 
+        </section>
+
+        <!-- ------------------------------------------------------------------------------------------------------ -->
+
+        <section>
+          <section>
+            <h2>Passing around <b>Intent</b>s</h2>
+            Create it with some data:
+            <pre><code contenteditable class="java">Intent intent = new Intent(this, A.class);
+intent.putExtra("user_id", 1234);
+intent.putExtra("data", new SomeData());
+startActivity(intent);</code></pre>
+
+            <div class="fragment">
+              Recieve it (in <em>A</em>):
+              <pre><code contenteditable class="java">public class A extends Activity {
+
+@Override
+public void onCreate(Bundle savedInstance) {
+  super.onCreate(savedInstance);
+
+  int userId = getIntent().getIntExtra("user_id");
+  SomeData data = (SomeData) getIntent().getSerializableExtra("data");
+}</code></pre>
+            </div>
+
+          </section>
+
+          <section>
+            <h2>"Intents" Pattern</h2>
+            Something I used to lessen the pain of this:
+            <br>
+            Create:
+            <pre><code contenteditable class="java">Intents.Login.show()</code></pre>
+
+            Read:
+            <pre><code contenteditable class="java">public class A extends Activity {
+
+@Override
+public void onCreate(Bundle savedInstance) {
+  super.onCreate(savedInstance);
+
+  LoginData data = Intents.Login.getData(getIntent());
+}</code></pre>
+
+            <div class="fragment">
+              Group intents logically:
+
+              <pre><code contenteditable class="java">interface Intents {
+  abstract class Login { /*...*/ }
+  abstract class Messages { /*...*/ }
+
+  // etc...
+}</code></pre>
+            </div>
+          </section>
+
+          <section>
+            <h2><b>Pattern Matching </b> and <b>Extractors</b></h2>
+            Instead of:
+            <pre><code contenteditable class="java">if("Bob".equals(person.getName()) {
+  String name = person.getName();
+  String surname = person.getSurname();
+  // do things...
+} else {
+  Log.d("You're not Bob!");
+}</code></pre>
+
+            <div class="fragment">
+              We can:
+              <pre><code contenteditable class="java">person match {
+  case Person("Bob", surname) =>
+    ("Bob's surname is: " + surname).toast
+  case _ =>
+    "You're not Bob!".toast
+}</code></pre>
+            </div>
+
+            <div class="fragment">See how we used Person(_, _)? <br> It's an <b>extractor</b>.</div>
+          </section>
+
+          <section>
+            <h2>Roll your own Extractor</h2>
+            The data type:
+            <pre><code contenteditable class="java">class Data(num: Int)</code></pre>
+
+            <div class="fragment">
+              It's <b>companion object</b> ("static methods"):
+              <pre><code contenteditable class="java">object Data { // that's called an "companion object"
+
+  def apply(num: Int) = new Data(num)
+
+  def unapply(i: Intent): Option[Data] =
+    if (i.hasExtra("num"))
+      Some(new Data(i.getIntExtra("num")))
+    else
+      None
+}</code></pre>
+            </div>
+            <div class="fragment">A <b>case class</b> has auto-generated apply / unapply! <em>Awesome!</em></div>
+          </section>
+
+          <section>
+            <h2>Extracting our Data</h2>
+            Here's how to use it:
+
+            <div class="fragment">
+              apply()
+              <pre><code contenteditable class="java">val data = Data(1)
+// is the same as:
+val data2 = Data.apply(2)</code></pre>
+
+              <em>Remember <b>Some(12)</b>? Same thing.</em>
+            </div>
+
+            <div class="fragment">
+              unapply()
+              <pre><code contenteditable class="java">data match {
+  case Data(num) => assert { num == 1 }  // matches here! num = 1
+  case _ => ???
+}</code></pre>
+
+              <pre class="fragment"><code contenteditable class="java">data match {
+  case Data(333) => ???
+  case Data(1) => // matches here!
+}</code></pre>
+
+              <div class="fragment">
+                The default case:
+              <pre><code contenteditable class="java">data match {
+  case Something(a, b) =>
+  case other => // matches here
+}</code></pre>
+              </div>
+            </div>
           </section>
         </section>
 
