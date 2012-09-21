@@ -1,3 +1,8 @@
+Scala my Android
+================
+
+[This presentation is viewable online!](http://ktoso.github.com/scala-android-presentation/#/)
+
 Presentation about Scala tricks on Android.
 
 Presented first at: [Mobilization.pl](http://www.mobilization.pl) 22.09.2012
